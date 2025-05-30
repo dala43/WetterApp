@@ -10,13 +10,13 @@ class Collector {
 
   }
 
+
   async fetchData() {
     try {
       const url = `https://api.openweathermap.org/data/2.5/weather?q=${this.location}&units=metric&appid=${this.apiKey}&lang=de`;
       const response = await axios.get(url);
       const data = response.data;
 
-      // Datenobjekt passend zur DB-Tabelle bauen
       const wetterdaten = {
         ort: this.location,
         temperatur: data.main.temp,
