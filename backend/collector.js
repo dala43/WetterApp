@@ -12,6 +12,7 @@ class Collector {
   
 
 
+
   async fetchData() {
     try {
       const url = `https://api.openweathermap.org/data/2.5/weather?q=${this.location}&units=metric&appid=${this.apiKey}&lang=de`;
