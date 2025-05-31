@@ -10,6 +10,7 @@ lint-backend:
     - cd backend
     - npm install
     - npx eslint . --ext .js,.ts
+
   only:
     - branches
   tags:

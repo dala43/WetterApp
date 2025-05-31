@@ -4,7 +4,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint . "
+    "lint": "eslint . --ext .js,.ts,.svelte"
+   
+    
   },
   "keywords": [],
   "author": "",
@@ -17,6 +19,7 @@
     "express": "^5.1.0",
     "sqlite3": "^5.1.7"
   },
+<<<<<<< HEAD
   "description": "",
   "devDependencies": {
     "@eslint/js": "^9.28.0",
@@ -26,4 +29,7 @@
     "globals": "^16.2.0",
     "typescript-eslint": "^8.33.0"
   }
+=======
+  "description": ""
+>>>>>>> c698452e3caaf11b694f58f25bb4b7560ddfeed6
 }
