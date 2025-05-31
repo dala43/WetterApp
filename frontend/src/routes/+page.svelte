@@ -1,7 +1,7 @@
 <script>
   import { onMount } from 'svelte';
   let city = '';
-  let weatherData = null; // ein Objekt pro Stadt, keine Liste mehr
+  let weatherData = null; 
   let error = '';
   let loading = false;
 
@@ -13,7 +13,7 @@
     weatherData = null;
 
     try {
-      // 1. Collector starten (kein attribute mehr nötig)
+      // 1. Collector starten 
       const startResponse = await fetch('http://localhost:3001/collectors/start', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -26,7 +26,7 @@
         // Fehler ignorieren, wenn Collector schon läuft
       }
 
-      // 2. Kurz warten (Collector braucht ein paar Sekunden)
+      // 2. Kurz warten
       await new Promise(resolve => setTimeout(resolve, 3000));
 
       // 3. Wetterdaten abrufen
@@ -37,9 +37,6 @@
         return;
       }
       const data = await res.json();
-
-      // Da in DB pro Ort nur ein Datensatz mit allen Spalten gespeichert wird,
-      // einfach den neuesten nehmen (oder ersten)
       weatherData = data[0] || null;
 
     } catch (err) {
