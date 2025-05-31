@@ -1,0 +1,48 @@
+stages:
+  - lint
+  - sonar
+
+# Lint Backend
+lint-backend:
+  stage: lint
+  image: node:18-alpine
+  script:
+    - cd backend
+    - npm ci
+    - npx eslint . --ext .js,.ts
+
+  only:
+    - branches
+  tags:
+    - nodejs
+
+# Lint Frontend
+lint-frontend:
+  stage: lint
+  image: node:18-alpine 
+  script:
+    - cd frontend
+    - npm install --omit=optional
+    - npx eslint . --ext .js,.ts,.svelte
+  only:
+    - branches
+  tags:
+    - nodejs
+
+
+# SonarQube Scan 
+sonar_scan:
+  stage: sonar
+  image: sonarsource/sonar-scanner-cli:4
+  script:
+  - |
+    sonar-scanner \
+      -Dsonar.projectKey=Wetter-App \
+      -Dsonar.sources=backend,frontend \
+       -Dsonar.host.url=https://scm.thm.de/sonar \
+      -Dsonar.login=$SONAR_TOKEN
+
+  only:
+    - branches
+  tags:
+    - sonarqube
