@@ -8,7 +8,7 @@ lint-backend:
   image: node:18-alpine
   script:
     - cd backend
-    - npm install
+    - npm ci
     - npx eslint . --ext .js,.ts
 
   only:
