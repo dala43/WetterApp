@@ -1,9 +1,13 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
+const helmet = require('helmet');
 const port = 3001;
 
 const Collector = require('./collector');
+
+app.disable('x-powered-by'); // Express-Version verstecken
+app.use(helmet());           // Sicherheitsheader setzen
 
 app.use(cors({
   origin: ['http://localhost:3000'], // nur mein Frontend erlauben
