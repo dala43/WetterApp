@@ -5,7 +5,10 @@ const port = 3001;
 
 const Collector = require('./collector');
 
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:3000'], // nur mein Frontend erlauben
+  methods: ['GET', 'POST'],          // nur nötige Methoden erlauben
+}));
 app.use(express.json());
 
 const collectors = new Map();
