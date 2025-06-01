@@ -33,10 +33,14 @@ wetterapp/
 
 ## Installation
 ``` bash
-cd backend 
+zum Ausführen der Frontend: 
 cd frontend
 npm install
 npm run
+
+Zum Ausführen der Backend
+cd backend
+node index.js 
 ```
 
 ## Authors and acknowledgment
