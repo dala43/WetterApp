@@ -9,6 +9,7 @@ Cloud-native Microservice-Anwendung zur Erfassung, Speicherung und Visualisierun
 - Collector-Dienste manuell steuerbar (Start/Stop/Status)
 - Integration mit GitLab CI/CD zur Qualitätssicherung
 
+
 ## Technologien
 
 | Bereich        | Technologie                |
@@ -28,8 +29,12 @@ wetterapp/
 ├── Dokumentation
 └── README.md
 
-## Visuals
+## Visuelle Darstellung 
 
+
+## Code formatierung und prüfen
+npm run lint
+npm run format
 
 ## Installation
 ``` bash
@@ -43,8 +48,15 @@ cd backend
 node index.js 
 ```
 
+
+## Ausführen der App
+- nach der Installation 
+- geht auf dem Browser 
+- gibt eine Stadt in der Suchfeld
+- danach suchen Button eintippen
+- die Visuale und Grafische wetter Daten interpretieren
+
 ## Authors and acknowledgment
 Dania Al Aji 
 Eman Kara Ali 
 Tchenou chimi Julienne Malvina 
-
