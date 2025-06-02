@@ -9,7 +9,7 @@ class Collector {
     this.apiKey = process.env.OPENWEATHER_API_KEY;
 
   }
-  
+
 
 
 
