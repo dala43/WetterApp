@@ -45,7 +45,7 @@ npm run format
 zum Ausführen der Frontend: 
 cd frontend
 npm install
-npm run
+npm run dev
 
 Zum Ausführen der Backend
 cd backend
@@ -85,7 +85,7 @@ https://videos.pexels.com/video-files/2657691/2657691-hd_1920_1080_30fps.mp4
 
 ChatGpt zur Dokumentation
 
-## Authors and acknowledgment
+## Autoren
 Dania Al Aji 
 Eman Kara Ali &
 Tchenou chimi Julienne Malvina 
