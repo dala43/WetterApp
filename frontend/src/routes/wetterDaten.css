@@ -1,0 +1,186 @@
+body {
+  margin: 0;
+  overflow: hidden;
+  font-family: sans-serif;
+}
+
+.video-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: -1;
+}
+
+.center {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  flex-direction: column;
+  align-items: center;
+  color: white;
+  display: flex;
+  gap: 1rem;
+  z-index: 10;
+  font-size: 30px;
+}
+
+.menu-button {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  background: #007aff;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  z-index: 20;
+}
+
+.menu {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 280px;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  backdrop-filter: blur(10px);
+  padding: 1rem;
+  box-sizing: border-box;
+  overflow-y: auto;
+  z-index: 15;
+  display: flex;
+  flex-direction: column;
+}
+
+.menu input[type="text"] {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: none;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  margin-top: 3rem;
+}
+
+.menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.menu li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.4rem 0.2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+}
+
+.menu li:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.delete-button {
+  background: transparent;
+  border: none;
+  color: #ff4d4d;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 1.1rem;
+}
+
+.add-location-container {
+  margin-top: 1rem;
+}
+
+.add-location-container button {
+  width: 100%;
+  padding: 0.5rem;
+  background: #007aff;
+  border: none;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.slide-container {
+  display: flex;
+  transition: transform 0.5s ease;
+  height: 100vh;
+  width: 100vw;
+}
+
+.slide {
+  min-width: 100vw;
+  padding: 2rem;
+  box-sizing: border-box;
+  color: white;
+  overflow-y: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.weather-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+  max-width: 600px;
+  width: 100%;
+}
+
+.weather-widget {
+  background: rgba(255, 255, 255, 0.50);
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+  backdrop-filter: blur(8px);
+  color: black;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  font-size: 0.95rem;
+  user-select: none;
+}
+
+.weather-widget span {
+  display: block;
+  opacity: 0.7;
+  margin-top: 0.3rem;
+  font-size: 0.85rem;
+}
+
+.weather-widget.big {
+  grid-column: span 2;
+  font-size: 1.2rem;
+}
+
+.dots {
+  position: fixed;
+  bottom: 1rem;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  z-index: 10;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  background: white;
+  margin: 0 5px;
+  border-radius: 50%;
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+.dot.active {
+  opacity: 1;
+}
