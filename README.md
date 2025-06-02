@@ -33,7 +33,7 @@ wetterapp/
 ![Screenshot der App](assets/screenshot-4.jpg)
 ![Screenshot der App](assets/screenshot.jpg)
 ![Screnshot der App]( assets/screenshot-2.jpg)
-![Screenshot der App](assets/screenshot-3.jpg)
+![Screenshot der App](assets/Screenshot-3.jpg)
 
 
 ## Code formatierung und prüfen
