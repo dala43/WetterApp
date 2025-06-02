@@ -30,6 +30,10 @@ wetterapp/
 └── README.md
 
 ## Visuelle Darstellung 
+![Screenshot der App](assets/screenshot-4.jpg)
+![Screenshot der App](assets/screenshot.jpg)
+![Screnshot der App]( assets/screenshot-2.jpg)
+![Screenshot der App](assets/screenshot-3.jpg)
 
 
 ## Code formatierung und prüfen
