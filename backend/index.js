@@ -14,8 +14,8 @@ app.disable('x-powered-by'); // Express-Version verstecken
 app.use(helmet());           // Sicherheitsheader setzen
 
 app.use(cors({
-  origin: ['http://localhost:3000','http://localhost:5173'], // nur mein Frontend erlauben
-  methods: ['GET', 'POST'],           // nur nötige Methoden erlauben
+  origin: ['http://localhost:3000', 'http://localhost:5173'], // nur mein Frontend erlauben
+  methods: ['GET', 'POST', 'DELETE'],           // nur nötige Methoden erlauben
 }));
 app.use(express.json());
 
@@ -66,7 +66,7 @@ app.post('/collectors/start', (req, res) => {
   });
 
   collector.start();
- 
+
 
 
   collectors.set(location, collector);
@@ -108,7 +108,37 @@ app.get('/weather', async (req, res) => {
   res.json(data);
 });
 
+//Ort löschen 
+
+app.delete('/weather/:city', async (req, res) => {
+  const city = req.params.city;
+
+  if (!city) return res.status(400).json({ error: 'city erforderlich' });
+
+  // Collector stoppen, falls vorhanden
+  if (collectors.has(city)) {
+    const collector = collectors.get(city);
+    collector.stop();
+    collectors.delete(city);
+    console.log(`Collector für ${city} gestoppt beim Löschen.`);
+  }
+
+  const { error } = await supabase
+    .from('wetterdaten')
+    .delete()
+    .eq('ort', city);
+
+  if (error) {
+    console.error('Fehler beim Löschen in Supabase:', error);
+    return res.status(500).json({ error: 'Fehler beim Löschen' });
+  }
+
+  res.json({ message: `Wetterdaten für ${city} gelöscht und Collector gestoppt` });
+});
+
+
 
 app.listen(port, () => {
   console.log(`Backend läuft unter http://localhost:${port}`);
 });
+
