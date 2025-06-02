@@ -60,6 +60,31 @@ node index.js
 - danach suchen Button eintippen
 - die Visuale und Grafische wetter Daten interpretieren
 
+## Quellen für Hintergrundvideos
+Sonne:
+https://de.freepik.com/gratis-video/schoener-blauer-himmel-mit-flauschigen-weissen-wolken_3417148
+https://videocdn.cdnpk.net/videos/a70dc658-c7e5-56f4-9d9e-bfdb906b7a9f/horizontal/downloads/original.mp4?filename=0_Blue_Sky_White_Clouds_3840x2160.mp4
+
+Wolken:
+https://de.freepik.com/search?format=search&last_filter=type&last_value=video&query=weather&type=video
+https://videocdn.cdnpk.net/videos/de56c1c2-524e-549f-9012-e794b996379c/horizontal/downloads/4k.mp4?filename=0_Clouds_Sky_3840x2160.mp4
+
+Regen:
+https://www.pexels.com/de-de/suche/videos/regen/
+https://videos.pexels.com/video-files/856186/856186-hd_1920_1080_30fps.mp4
+
+Schnee:
+https://videocdn.cdnpk.net/videos/d9841bf0-2aa9-4526-aa59-b6c4bb966fea/horizontal/previews/clear/large.mp4
+
+Hintergrund:
+https://videocdn.cdnpk.net/videos/9a57b108-67d5-5334-aa7c-2128f0af8b7b/horizontal/previews/clear/large.mp4
+
+Gewitter:
+https://www.pexels.com/de-de/suche/videos/gewitter/
+https://videos.pexels.com/video-files/2657691/2657691-hd_1920_1080_30fps.mp4
+
+ChatGpt zur Dokumentation
+
 ## Authors and acknowledgment
 Dania Al Aji 
 Eman Kara Ali &
