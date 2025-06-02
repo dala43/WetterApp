@@ -62,5 +62,5 @@ node index.js
 
 ## Authors and acknowledgment
 Dania Al Aji 
-Eman Kara Ali 
+Eman Kara Ali &
 Tchenou chimi Julienne Malvina 
