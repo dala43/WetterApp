@@ -8,5 +8,6 @@
   },
   "scripts": {
     "lint": "eslint . "
+    
   }
 }
