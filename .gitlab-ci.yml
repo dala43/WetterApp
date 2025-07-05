@@ -78,15 +78,3 @@ build-frontend:
   tags:
     - kaniko
 
-deploy:
-  stage: deploy
-  image: python:3.11
-  only:
-    - master
-  before_script:
-    - pip install ansible
-  script:
-    - ansible-playbook -i ansible/inventory/hosts.ini ansible/setup-server.yml
-    - ansible-playbook -i ansible/inventory/hosts.ini ansible/deploy-app.yml
-  tags:
-    - docker
