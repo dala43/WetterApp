@@ -52,15 +52,12 @@ build-backend:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
   script:
-    - /kaniko/executor \
-      --context $CI_PROJECT_DIR/backend \
-      --dockerfile $CI_PROJECT_DIR/backend/Dockerfile \
-      --destination $CI_REGISTRY_IMAGE/backend:latest \
-      --destination $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA
+    - /kaniko/executor --context $CI_PROJECT_DIR/backend --dockerfile $CI_PROJECT_DIR/backend/Dockerfile --destination $CI_REGISTRY_IMAGE/backend:latest --destination $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA
   only:
     - branches
   tags:
     - kaniko
+
 
 build-frontend:
   stage: build
@@ -68,13 +65,8 @@ build-frontend:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
   script:
-    - /kaniko/executor \
-      --context $CI_PROJECT_DIR/frontend \
-      --dockerfile $CI_PROJECT_DIR/frontend/Dockerfile \
-      --destination $CI_REGISTRY_IMAGE/frontend:latest \
-      --destination $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_SHORT_SHA
+    - /kaniko/executor --context $CI_PROJECT_DIR/frontend --dockerfile $CI_PROJECT_DIR/frontend/Dockerfile --destination $CI_REGISTRY_IMAGE/frontend:latest --destination $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_SHORT_SHA
   only:
     - branches
   tags:
     - kaniko
-
