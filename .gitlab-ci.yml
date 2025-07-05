@@ -1,6 +1,7 @@
 stages:
   - lint
   - sonar
+  - build
 
 # Lint Backend
 lint-backend:
@@ -10,7 +11,6 @@ lint-backend:
     - cd backend
     - npm ci
     - npx eslint . --ext .js,.ts
-
   only:
     - branches
   tags:
@@ -19,7 +19,7 @@ lint-backend:
 # Lint Frontend
 lint-frontend:
   stage: lint
-  image: node:18-alpine 
+  image: node:18-alpine
   script:
     - cd frontend
     - npm install --omit=optional
@@ -29,20 +29,55 @@ lint-frontend:
   tags:
     - nodejs
 
-
-# SonarQube Scan 
+# SonarQube Scan
 sonar_scan:
   stage: sonar
   image: sonarsource/sonar-scanner-cli:4
   script:
-  - |
-    sonar-scanner \
-      -Dsonar.projectKey=Wetter-App \
-      -Dsonar.sources=backend,frontend \
-       -Dsonar.host.url=https://scm.thm.de/sonar \
-      -Dsonar.login=$SONAR_TOKEN
-
+    - |
+      sonar-scanner \
+        -Dsonar.projectKey=Wetter-App \
+        -Dsonar.sources=backend,frontend \
+        -Dsonar.host.url=https://scm.thm.de/sonar \
+        -Dsonar.login=$SONAR_TOKEN
   only:
     - branches
   tags:
     - sonarqube
+
+# Build & Push Docker Images via Kaniko
+build-backend:
+  stage: build
+  image:
+    name: gcr.io/kaniko-project/executor:latest
+    entrypoint: [""]
+  script:
+    - |
+      /kaniko/executor \
+        --context $CI_PROJECT_DIR/backend \
+        --dockerfile $CI_PROJECT_DIR/backend/Dockerfile \
+        --destination $CI_REGISTRY_IMAGE/backend:latest \
+        --destination $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA \
+        --oci-layout-path /kaniko/oci
+  only:
+    - branches
+  tags:
+    - kaniko
+
+build-frontend:
+  stage: build
+  image:
+    name: gcr.io/kaniko-project/executor:latest
+    entrypoint: [""]
+  script:
+    - |
+      /kaniko/executor \
+        --context $CI_PROJECT_DIR/frontend \
+        --dockerfile $CI_PROJECT_DIR/frontend/Dockerfile \
+        --destination $CI_REGISTRY_IMAGE/frontend:latest \
+        --destination $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_SHORT_SHA \
+        --oci-layout-path /kaniko/oci
+  only:
+    - branches
+  tags:
+    - kaniko
