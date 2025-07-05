@@ -74,9 +74,12 @@ build-frontend:
 
 ansible_deploy:
   stage: ansible
-  image: williamyeh/ansible:alpine3
+  image: docker:latest
+  services:
+    - docker:dind
   before_script:
-    - apk add --no-cache openssh-client git
+    - apk add --no-cache py3-pip openssh-client git
+    - pip3 install ansible
     - mkdir -p ~/.ssh
     - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
@@ -86,4 +89,5 @@ ansible_deploy:
     - ansible-playbook -i ansible/inventory/hosts.yml ansible/site-setup.yml
     - ansible-playbook -i ansible/inventory/hosts.yml ansible/deploy-app.yml
   only:
-    - branches
+    - master
+    - main
