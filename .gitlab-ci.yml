@@ -45,20 +45,18 @@ sonar_scan:
   tags:
     - sonarqube
 
-# Build & Push Docker Images via Kaniko
+# Build & Push Docker Images via Kaniko (Debug-Image mit Shell)
 build-backend:
   stage: build
   image:
-    name: gcr.io/kaniko-project/executor:latest
+    name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
   script:
-    - |
-      /kaniko/executor \
-        --context $CI_PROJECT_DIR/backend \
-        --dockerfile $CI_PROJECT_DIR/backend/Dockerfile \
-        --destination $CI_REGISTRY_IMAGE/backend:latest \
-        --destination $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA \
-        --oci-layout-path /kaniko/oci
+    - /kaniko/executor \
+      --context $CI_PROJECT_DIR/backend \
+      --dockerfile $CI_PROJECT_DIR/backend/Dockerfile \
+      --destination $CI_REGISTRY_IMAGE/backend:latest \
+      --destination $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA
   only:
     - branches
   tags:
@@ -67,17 +65,28 @@ build-backend:
 build-frontend:
   stage: build
   image:
-    name: gcr.io/kaniko-project/executor:latest
+    name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
   script:
-    - |
-      /kaniko/executor \
-        --context $CI_PROJECT_DIR/frontend \
-        --dockerfile $CI_PROJECT_DIR/frontend/Dockerfile \
-        --destination $CI_REGISTRY_IMAGE/frontend:latest \
-        --destination $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_SHORT_SHA \
-        --oci-layout-path /kaniko/oci
+    - /kaniko/executor \
+      --context $CI_PROJECT_DIR/frontend \
+      --dockerfile $CI_PROJECT_DIR/frontend/Dockerfile \
+      --destination $CI_REGISTRY_IMAGE/frontend:latest \
+      --destination $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_SHORT_SHA
   only:
     - branches
   tags:
     - kaniko
+
+deploy:
+  stage: deploy
+  image: python:3.11
+  only:
+    - master
+  before_script:
+    - pip install ansible
+  script:
+    - ansible-playbook -i ansible/inventory/hosts.ini ansible/setup-server.yml
+    - ansible-playbook -i ansible/inventory/hosts.ini ansible/deploy-app.yml
+  tags:
+    - docker

@@ -1,0 +1,16 @@
+---
+- name: Anwendung bereitstellen
+  hosts: appserver
+  become: yes
+
+  tasks:
+    - name: Docker Compose Datei kopieren
+      copy:
+        src: ../docker-compose.yml
+        dest: /home/user/docker-compose.yml
+        mode: '0644'
+
+    - name: Anwendung starten
+      shell: docker-compose up -d
+      args:
+        chdir: /home/user
