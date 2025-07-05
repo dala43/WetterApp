@@ -72,7 +72,7 @@ build-frontend:
   tags:
     - kaniko
 
-  ansible_deploy:
+ansible_deploy:
   stage: ansible
   image: williamyeh/ansible:alpine3
   before_script:
