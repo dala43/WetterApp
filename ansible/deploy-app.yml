@@ -1,16 +1,25 @@
----
-- name: Anwendung bereitstellen
+# ansible/deploy-app.yml
+- name: Deployment der Wetter-App
   hosts: appserver
-  become: yes
+  become: true
+  vars_files:
+    - group_vars/all.yml
 
   tasks:
-    - name: Docker Compose Datei kopieren
+    - name: Deploy-Verzeichnis anlegen
+      file:
+        path: "{{ app_deploy_path }}"
+        state: directory
+        mode: '0755'
+
+    - name: docker-compose.yml kopieren
       copy:
-        src: ../docker-compose.yml
-        dest: /home/user/docker-compose.yml
+        src: ../docker-compose.yml      
+        dest: "{{ app_deploy_path }}/docker-compose.yml"
         mode: '0644'
 
-    - name: Anwendung starten
-      shell: docker-compose up -d
-      args:
-        chdir: /home/user
+    - name: App via Docker Compose starten
+      community.docker.docker_compose:
+        project_src: "{{ app_deploy_path }}"
+        pull: yes
+        state: present

@@ -1,0 +1,43 @@
+# ansible/site-setup.yml
+- name: Basis-Setup für Wetter-App-Server
+  hosts: appserver
+  become: true
+  vars_files:
+    - group_vars/all.yml
+
+  tasks:
+    - name: System aktualisieren
+      apt:
+        update_cache: yes
+        upgrade: dist
+
+    - name: Docker-Abhängigkeiten installieren
+      apt:
+        name: "{{ docker_apt_packages }}"
+        state: present
+
+    - name: Docker-Repository GPG-Key hinzufügen
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Docker-Repository hinzufügen
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+
+    - name: Docker Engine installieren
+      apt:
+        name: docker-ce
+        state: latest
+
+    - name: Docker Compose herunterladen
+      get_url:
+        url: "https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-`uname -s`-`uname -m`"
+        dest: /usr/local/bin/docker-compose
+        mode: '0755'
+
+    - name: Docker-Dienst starten und aktivieren
+      service:
+        name: docker
+        state: started
+        enabled: true
