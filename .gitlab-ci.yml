@@ -74,9 +74,7 @@ build-frontend:
 
 ansible_deploy:
   stage: ansible
-  image: docker:latest
-  services:
-    - docker:dind
+  image: alpine:latest
   before_script:
     - apk add --no-cache py3-pip openssh-client git
     - pip3 install ansible
@@ -89,5 +87,5 @@ ansible_deploy:
     - ansible-playbook -i ansible/inventory/hosts.yml ansible/site-setup.yml
     - ansible-playbook -i ansible/inventory/hosts.yml ansible/deploy-app.yml
   only:
-    - master
-    - main
+    - branches
+
