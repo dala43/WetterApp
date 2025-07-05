@@ -86,4 +86,5 @@ build-frontend:
     - ansible-playbook -i ansible/inventory/hosts.yml ansible/site-setup.yml
     - ansible-playbook -i ansible/inventory/hosts.yml ansible/deploy-app.yml
   only:
-    - branches
+    - master
+    - main
