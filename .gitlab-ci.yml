@@ -2,7 +2,7 @@ stages:
   - lint
   - sonar
   - build
-  - ansible
+  - deploy
 
 # Lint Backend
 lint-backend:
@@ -46,45 +46,66 @@ sonar_scan:
   tags:
     - sonarqube
 
-# Build & Push Docker Images via Kaniko (Debug-Image mit Shell)
+# Build Backend Docker Image
 build-backend:
   stage: build
   image:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
   script:
-    - /kaniko/executor --context $CI_PROJECT_DIR/backend --dockerfile $CI_PROJECT_DIR/backend/Dockerfile --destination $CI_REGISTRY_IMAGE/backend:latest --destination $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA
+    - /kaniko/executor
+        --context $CI_PROJECT_DIR/backend
+        --dockerfile $CI_PROJECT_DIR/backend/Dockerfile
+        --destination $CI_REGISTRY_IMAGE/backend:latest
+        --destination $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA
   only:
     - branches
   tags:
     - kaniko
 
-
+# Build Frontend Docker Image
 build-frontend:
   stage: build
   image:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
   script:
-    - /kaniko/executor --context $CI_PROJECT_DIR/frontend --dockerfile $CI_PROJECT_DIR/frontend/Dockerfile --destination $CI_REGISTRY_IMAGE/frontend:latest --destination $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_SHORT_SHA
+    - /kaniko/executor
+        --context $CI_PROJECT_DIR/frontend
+        --dockerfile $CI_PROJECT_DIR/frontend/Dockerfile
+        --destination $CI_REGISTRY_IMAGE/frontend:latest
+        --destination $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_SHORT_SHA
   only:
     - branches
   tags:
     - kaniko
 
-ansible_deploy:
-  stage: ansible
-  image:
-    name: gcr.io/kaniko-project/executor:debug
-    entrypoint: [""]
+# Sicherheits-Scan 
+security_scan:
+  stage: build
+  image: aquasec/trivy:latest
   script:
-    - mkdir -p ~/.ssh
-    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-    - chmod 600 ~/.ssh/id_rsa
-    - ssh-keyscan -H $DEPLOY_HOST >> ~/.ssh/known_hosts
-    - ssh user@$DEPLOY_HOST 'cd /path/to/ansible && ansible-playbook -i inventory/hosts.yml site-setup.yml'
-    - ssh user@$DEPLOY_HOST 'cd /path/to/ansible && ansible-playbook -i inventory/hosts.yml deploy-app.yml'
+    - trivy image --exit-code 0 $CI_REGISTRY_IMAGE/backend:latest
+    - trivy image --exit-code 0 $CI_REGISTRY_IMAGE/frontend:latest
   only:
     - branches
   tags:
-    - kaniko
+    - docker
+
+# Deployment mit Ansible 
+ansible_deploy:
+  stage: deploy
+  image: alpine:latest
+  before_script:
+    - apk add --no-cache openssh-client ansible git
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-keyscan -H WeatherApp.mni.thm.de >> ~/.ssh/known_hosts
+  script:
+    - ansible-playbook -i ansible/inventory/hosts.yml ansible/site-setup.yml
+    - ansible-playbook -i ansible/inventory/hosts.yml ansible/deploy-app.yml
+  only:
+    - branches
+  tags:
+    - docker
