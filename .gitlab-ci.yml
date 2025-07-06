@@ -49,17 +49,16 @@ sonar_scan:
 # Build Backend Docker Image
 build-backend:
   stage: build
-  image:
-    name: gcr.io/kaniko-project/executor:debug
-    entrypoint: [""] 
+  image: gcr.io/kaniko-project/executor:debug
+  before_script:
+    - apk add --no-cache docker
   script:
-    - echo "Cloud.2025" | docker login -u "dania44" --password-stdin
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
     - /kaniko/executor --context $CI_PROJECT_DIR/backend --dockerfile $CI_PROJECT_DIR/backend/Dockerfile --destination $CI_REGISTRY_IMAGE/backend:latest --destination $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA
   only:
     - branches
   tags:
     - kaniko
-
 
 
 # Build Frontend Docker Image
@@ -107,4 +106,4 @@ ansible_deploy:
   only:
     - branches
   tags:
-    - docker
+    - kaniko
