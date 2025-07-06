@@ -49,9 +49,9 @@ sonar_scan:
 
 ansible_deploy:
   stage: ansible
-  image:
-    name: gcr.io/kaniko-project/executor:debug
-    entrypoint: [""]
+  image: alpine:latest
+  before_script:
+    - apk add --no-cache openssh-client ansible
   script:
     - mkdir -p ~/.ssh
     - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
