@@ -65,4 +65,5 @@ ansible_deploy:
   only:
     - branches
   tags:
-    - kaniko
+    - alpine
+
