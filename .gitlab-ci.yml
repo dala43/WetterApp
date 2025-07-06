@@ -55,9 +55,13 @@ ansible_deploy:
   image: alpine:latest
   before_script:
     - apk add --no-cache openssh-client ansible git
+    
     - mkdir -p ~/.ssh
+    
     - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+    
     - chmod 600 ~/.ssh/id_rsa
+    
     - ssh-keyscan -H WeatherApp.mni.thm.de >> ~/.ssh/known_hosts
   script:
     - ansible-playbook -i ansible/inventory/hosts.yml ansible/site-setup.yml
@@ -66,4 +70,5 @@ ansible_deploy:
     - branches
   tags:
     - alpine
+
 
