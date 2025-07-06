@@ -58,9 +58,9 @@ ansible_deploy:
     
     - mkdir -p ~/.ssh
     
-    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
     
-    - chmod 600 ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_ed25519
     
     - ssh-keyscan -H WeatherApp.mni.thm.de >> ~/.ssh/known_hosts
   script:
@@ -70,5 +70,3 @@ ansible_deploy:
     - branches
   tags:
     - alpine
-
-
