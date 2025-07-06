@@ -81,9 +81,9 @@ ansible_deploy:
     - mkdir -p ~/.ssh
     - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
-    - ssh-keyscan -H $DEPLOY_HOST >> ~/.ssh/known_hosts
-    - ssh user@$DEPLOY_HOST 'cd /path/to/ansible && ansible-playbook -i inventory/hosts.yml site-setup.yml'
-    - ssh user@$DEPLOY_HOST 'cd /path/to/ansible && ansible-playbook -i inventory/hosts.yml deploy-app.yml'
+    - ssh-keyscan -H WeatherApp.mni.thm.de >> ~/.ssh/known_hosts
+    - ssh user@WeatherApp.mni.thm.de 'cd /path/to/ansible && ansible-playbook -i inventory/hosts.yml site-setup.yml'
+    - ssh user@WeatherApp.mni.thm.de 'cd /path/to/ansible && ansible-playbook -i inventory/hosts.yml deploy-app.yml'
   only:
     - branches
   tags:
