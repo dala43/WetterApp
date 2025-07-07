@@ -127,34 +127,43 @@ build-frontend:
 
 ### Deployment mit Ansible
 
-Nach dem erfolgreichen Build der Docker-Images wird die Anwendung über **Ansible** auf einem Server bereitgestellt. Dies erfolgt durch SSH-Verbindungen, wobei der private SSH-Schlüssel und der Zielhost (Server) in der Pipeline definiert sind.
+Nach dem erfolgreichen Build der Docker-Images wird die Anwendung mit Ansible auf einem Zielserver bereitgestellt. Die Verbindung zum Server erfolgt über SSH, wobei der private SSH-Schlüssel und der Zielhost in der Pipeline definiert sind.
 
 ```yaml
 ansible_deploy:
-  stage: ansible
-  image:
-    name: gcr.io/kaniko-project/executor:debug
-    entrypoint: [""]  
-  script:
+  stage: deploy
+  image: alpine:latest
+  before_script:
+    - apk add --no-cache openssh-client ansible git
     - mkdir -p ~/.ssh
-    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-    - chmod 600 ~/.ssh/id_rsa
-    - ssh-keyscan -H $DEPLOY_HOST >> ~/.ssh/known_hosts
-    - ssh user@$DEPLOY_HOST 'cd /path/to/ansible && ansible-playbook -i inventory/hosts.yml site-setup.yml'
-    - ssh user@$DEPLOY_HOST 'cd /path/to/ansible && ansible-playbook -i inventory/hosts.yml deploy-app.yml'
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_ed25519
+    - chmod 600 ~/.ssh/id_ed25519
+    - ssh-keyscan -H WeatherApp.mni.thm.de >> ~/.ssh/known_hosts
+    - ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no user@weatherapp.mni.thm.de 'echo ✅ Verbindung erfolgreich'
+  
+  script:
+    - cd ansible
+    - export ANSIBLE_SUDO_PASS=$SUDO_PASSWORD
+    - ansible-playbook -i inventory/hosts.yml site-setup.yml --private-key ~/.ssh/id_ed25519 -u user --extra-vars "ansible_become_pass=$SUDO_PASSWORD"
+    - ansible-playbook -i inventory/hosts.yml deploy-app.yml --private-key ~/.ssh/id_ed25519 -u user --extra-vars "ansible_become_pass=$SUDO_PASSWORD"
   only:
     - branches
   tags:
-    - kaniko
+    - alpine
+
 ```
 
 **Erklärung**:
 
-* Zuerst wird der private SSH-Schlüssel geladen und die Verbindung zum Zielserver über `ssh-keyscan` vorbereitet.
-* Danach werden zwei Ansible-Playbooks ausgeführt:
+* SSH-Verbindung vorbereiten: Der private SSH-Schlüssel wird geladen, und die Verbindung zum Zielserver wird mit ssh-keyscan vorbereitet.
 
-  * **site-setup.yml**: Setzt den Server ein (z. B. Docker installieren, Konfigurationen).
-  * **deploy-app.yml**: Stellt die Anwendung mithilfe der Docker-Images bereit.
+Ansible-Playbooks ausführen:
+
+site-setup.yml: Installiert Docker und bereitet den Server vor.
+
+deploy-app.yml: Startet die Anwendung über Docker Compose auf dem Server.
+
+CI/CD-Trigger: Der Job wird für alle Branches ausgeführt.
 
 ---
 
