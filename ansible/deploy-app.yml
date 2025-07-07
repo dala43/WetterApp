@@ -20,4 +20,4 @@
       shell: |
         docker compose -f {{ app_directory }}/docker-compose.yml up -d --pull always
       args:
-        chdir: "{{ app_directory }} hier ist mein deploy-app.yml
+        chdir: "{{ app_directory }}"
