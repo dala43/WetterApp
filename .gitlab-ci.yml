@@ -3,6 +3,7 @@ stages:
   - sonar
   - build
   - deploy
+  - test
 
 # Lint Backend
 lint-backend:
@@ -47,6 +48,13 @@ sonar_scan:
     - sonarqube
 
 
+check-runner:
+  stage: test
+  image: alpine:latest
+  script:
+    - whoami
+    - pwd
+    - ls -la ~/.ssh
 
 
 # Deployment mit Ansible 
