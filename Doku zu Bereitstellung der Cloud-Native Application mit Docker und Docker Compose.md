@@ -351,13 +351,10 @@ services:
 ```
 
 ## Beschreibung des Problems: ##
-Im *ansible\_deploy*-Job der CI/CD-Pipeline wird versucht, eine SSH-Verbindung zum Zielserver herzustellen, um eine Ansible-Playbook-Installation durchzuführen. Ein wesentlicher Bestandteil dieses Prozesses ist die Verwendung eines privaten SSH-Schlüssels, der in der Umgebungsvariable SSH_PRIVATE_KEY gespeichert ist und zum Authentifizieren des Servers genutzt wird.
+Im Frontend-Code wird ein POST-Request an http://backend:3000/api/collectors/start gesendet. Die Fehlermeldung lautet:
+POST http://backend:3000/api/collectors/start net::ERR_NAME_NOT_RESOLVED. Dies weist darauf hin, dass der Backend-Service nicht aufgelöst werden kann. Der Fehler tritt auf, wenn der Frontend-Container versucht, eine Verbindung zum Backend herzustellen, aber der Hostname backend nicht erkannt oder aufgelöst werden kann.
 
-Der Fehler tritt auf, weil das Pipeline-Setup auf GitLab versucht, auf den privaten Schlüssel unter /root/.ssh/id_ed25519 zuzugreifen. In der Fehlermeldung wird angezeigt, dass der Schlüssel aufgrund eines Problems mit der Bibliothek libcrypto nicht geladen werden kann, was dazu führt, dass die SSH-Authentifizierung fehlschlägt und die Verbindung zum Server nicht hergestellt werden kann.
-
-## Ursache:##
-Das Problem könnte mehrere Ursachen haben, darunter ein falscher Pfad zum privaten Schlüssel, fehlerhafte Berechtigungen des Schlüssels oder das Fehlen eines funktionierenden SSH-Clients im verwendeten Docker-Image.
-
+Die Ursache für diesen Fehler ist, dass der Frontend-Container den Backend-Container über den Service-Namen backend ansprechen sollte, aber aus irgendeinem Grund kann der Container diesen Hostnamen nicht auflösen, was zu einem Verbindungsfehler führt. Auch die Fetch-Anforderung im Frontend schlägt mit TypeError: Failed to fetch fehl, was darauf hinweist, dass der Fetch-Aufruf aufgrund eines Netzwerkfehlers nicht erfolgreich abgeschlossen werden konnte.
 ```
 ## 10. Lokale Entwicklung und Test
 
