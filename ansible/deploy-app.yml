@@ -6,30 +6,17 @@
     app_directory: /opt/wetterapp
 
   tasks:
-    - name: rsync installieren (Debian/Ubuntu)
-      apt:
-        name: rsync
-        state: present
-      when: ansible_os_family == "Debian"
-
-    - name: rsync installieren (RHEL/CentOS)
-      yum:
-        name: rsync
-        state: present
-      when: ansible_os_family == "RedHat"
-
     - name: Zielverzeichnis für Frontend erstellen
       file:
         path: "{{ app_directory }}/frontend"
         state: directory
         recurse: yes
 
-    - name: Frontend synchronisieren
-      synchronize:
-        src: ../frontend/
+    - name: Frontend kopieren (rekursiv)
+      copy:
+        src: "../frontend/"
         dest: "{{ app_directory }}/frontend/"
-        recursive: yes
-        delete: yes
+        mode: '0644'
 
     - name: Zielverzeichnis für Backend erstellen
       file:
@@ -37,12 +24,11 @@
         state: directory
         recurse: yes
 
-    - name: Backend synchronisieren
-      synchronize:
-        src: ../backend/
+    - name: Backend kopieren (rekursiv)
+      copy:
+        src: "../backend/"
         dest: "{{ app_directory }}/backend/"
-        recursive: yes
-        delete: yes
+        mode: '0644'
 
     - name: Docker-Compose-Datei kopieren
       copy:
