@@ -6,6 +6,12 @@
     app_directory: /opt/wetterapp
 
   tasks:
+    - name: rsync installieren
+      apt:
+        name: rsync
+        state: present
+        update_cache: yes
+
     - name: Zielverzeichnis für Frontend erstellen
       file:
         path: "{{ app_directory }}/frontend"
