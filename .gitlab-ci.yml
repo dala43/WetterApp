@@ -83,7 +83,7 @@ before_script:
   - chmod 600 ~/.ssh/id_ed25519
   - ssh-keyscan -H WeatherApp.mni.thm.de >> ~/.ssh/known_hosts
 
-  script:
+script:
     - cd ansible
     - ansible-playbook -i inventory/hosts.yml site-setup.yml --private-key ~/.ssh/id_ed25519 -u user
     - ansible-playbook -i inventory/hosts.yml deploy-app.yml --private-key ~/.ssh/id_ed25519 -u user
