@@ -183,15 +183,191 @@ Während der Ausführung der CI/CD-Pipeline auf GitLab tritt ein Problem im **`a
 ```bash
 /bin/sh: eval: line 149: ssh-keyscan: not found
 ```
+from pathlib import Path
 
-### Beschreibung des Problems:
+## 7. Containerisierung der Wetter-App
 
-Die Pipeline führt im **`ansible_deploy`-Job** die Schritte zur SSH-Authentifizierung und Verbindung zum Zielserver aus. Ein wesentlicher Schritt in diesem Prozess ist der Befehl `ssh-keyscan`, der notwendig ist, um den Server-Host in die Liste der vertrauenswürdigen Hosts (`~/.ssh/known_hosts`) aufzunehmen. Dieser Schritt schlägt jedoch fehl, weil das Kaniko-Image **keinen SSH-Client** (einschließlich `ssh-keyscan`) enthält. Das führt dazu, dass der Befehl `ssh-keyscan` nicht gefunden wird und die Pipeline mit dem Fehlercode `127` abbricht.
+Die Anwendung besteht aus zwei Hauptkomponenten:
 
-### Ursache:
+1. **Backend** (Node.js REST-API für Wetterdaten)
+2. **Frontend** (Web-Oberfläche mit Svelte, bereitgestellt über NGINX)
 
-Das verwendete Docker-Image `gcr.io/kaniko-project/executor:debug`, das für das Bauen der Docker-Images eingesetzt wird, beinhaltet nur die notwendigen Tools zum Bauen von Images und enthält keinen SSH-Client. Daher wird der Befehl `ssh-keyscan` nicht erkannt, was zu einem Fehler beim Erstellen der Verbindung zum Zielserver führt.
+Beide Komponenten wurden in **Docker-Containern** gekapselt, um eine einheitliche und portable Umgebung zu schaffen.
+
+---
+
+### 7.1 Dockerfile für das **Backend**
+
+```dockerfile
+FROM nodejs/node:18-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+
+EXPOSE 3000
+
+CMD ["node", "index.js"]
+```
+
+**Erklärung:**
+
+- `FROM nodejs/node:18-alpine`: Verwendet ein schlankes Node.js-Image für schnelle Builds.
+- `WORKDIR /app`: Setzt das Arbeitsverzeichnis im Container.
+- `COPY package*.json ./` und `RUN npm install`: Installiert alle Abhängigkeiten.
+- `COPY . .`: Kopiert den gesamten Code ins Image.
+- `EXPOSE 3000`: Gibt Port 3000 für Zugriffe von außen frei (z. B. für Docker Compose).
+- `CMD ["node", "index.js"]`: Startet den Server.
+
+➡️ **Ziel:** Ein lauffähiger Container, der die Wetterdaten-API auf Port **3000** bereitstellt.
+
+---
+
+### 7.2 Dockerfile für das **Frontend**
+
+```dockerfile
+# 1. Build Stage
+FROM nodejs/node:18-alpine as build
+
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build
+
+# 2. Production Stage
+FROM nginx:alpine
+
+COPY --from=build /app/build /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+**Erklärung:**
+
+- **Build-Stage**:
+  - Baut das Frontend mit Node.js (Svelte, etc.).
+  - Ergebnis ist ein Ordner mit statischen Dateien.
+
+- **Production-Stage**:
+  - Nutzt ein NGINX-Image, um die gebauten HTML/CSS/JS-Dateien zu hosten.
+  - `COPY --from=build ...`: Überträgt die gebauten Dateien ins Webroot von NGINX.
+
+➡️ **Ziel:** Ein Container, der das Web-Frontend unter **Port 80** ausliefert (später über Port 8000 erreichbar).
+
+---
+
+### 7.3 `docker-compose.yml` – Multi-Container Setup
+
+```yaml
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "3000:3000"   
+    restart: always
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "8000:80"
+    restart: always
+```
+
+**Erklärung:**
+
+- **Backend-Service**:
+  - Baut das Backend-Dockerfile aus dem Ordner `./backend`.
+  - Leitet Port 3000 des Containers an Port 3000 des Hosts weiter.
+  - `restart: always`: Container wird bei Fehlern automatisch neugestartet.
+
+- **Frontend-Service**:
+  - Baut das Frontend-Dockerfile aus `./frontend`.
+  - Frontend ist über `localhost:8000` erreichbar (Port 8000 des Hosts → Port 80 im Container).
+  - Ebenfalls mit automatischem Neustart.
+
+➡️ **Ziel:** Zwei separate, aber zusammen laufende Services für API und UI – lokal testbar und produktionsfähig.
+
+---
+
+## 8. Dockerfile für das **Frontend**
+
+```dockerfile
+# 1. Build Stage
+FROM nodejs/node:18-alpine as build
+
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build
+
+# 2. Production Stage
+FROM nginx:alpine
+
+# statische Dateien vom build kopieren
+COPY --from=build /app/build /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+### Beschreibung:
+- Die **Build Stage** installiert Abhängigkeiten und erzeugt ein Produktions-Build des Frontends.
+- Die **Production Stage** nutzt NGINX als Webserver und stellt die statischen Dateien bereit.
+
+---
+
+## 9. docker-compose.yml – Zusammenspiel der Services
+
+```yaml
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "3000:3000"
+    restart: always
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "8000:80"
+    restart: always
+```
+
+## Beschreibung des Problems: ##
+Im *ansible\_deploy*-Job der CI/CD-Pipeline wird versucht, eine SSH-Verbindung zum Zielserver herzustellen, um eine Ansible-Playbook-Installation durchzuführen. Ein wesentlicher Bestandteil dieses Prozesses ist die Verwendung eines privaten SSH-Schlüssels, der in der Umgebungsvariable SSH_PRIVATE_KEY gespeichert ist und zum Authentifizieren des Servers genutzt wird.
+
+Der Fehler tritt auf, weil das Pipeline-Setup auf GitLab versucht, auf den privaten Schlüssel unter /root/.ssh/id_ed25519 zuzugreifen. In der Fehlermeldung wird angezeigt, dass der Schlüssel aufgrund eines Problems mit der Bibliothek libcrypto nicht geladen werden kann, was dazu führt, dass die SSH-Authentifizierung fehlschlägt und die Verbindung zum Server nicht hergestellt werden kann.
+
+## Ursache:##
+Das Problem könnte mehrere Ursachen haben, darunter ein falscher Pfad zum privaten Schlüssel, fehlerhafte Berechtigungen des Schlüssels oder das Fehlen eines funktionierenden SSH-Clients im verwendeten Docker-Image.
 
 ```
+## 10. Lokale Entwicklung und Test
+
+### Voraussetzungen:
+- Docker & Docker Compose installiert
+
+### Schritte:
+1. Repository klonen:
+   ```bash
+   git clone <REPO-URL>
+   cd <projektverzeichnis>
+   ```
+2. Anwendung starten:
+   ```bash
+   docker-compose up --build
+   ```
+3. Zugriff:
+   - Frontend: [http://localhost:8000](http://localhost:8000)
+   - Backend: [http://localhost:3000](http://localhost:3000)
+
 
 ```
