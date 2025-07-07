@@ -22,7 +22,8 @@
     error = "";
 
 const isDocker = window.location.hostname !== 'localhost';
-const API_URL = isDocker ? 'http://backend:3000' : 'http://localhost:3000';
+const API_URL = 'http://localhost:3000';
+
 
     try {
        await fetch(`${API_URL}/api/collectors/start`, {
