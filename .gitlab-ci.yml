@@ -51,7 +51,7 @@ sonar_scan:
 
 check-runner:
   stage: test
-  image: alpine:latest
+  image: gcr.io/kaniko-project/executor:latest
   script:
     - whoami
     - pwd
