@@ -19,13 +19,13 @@
     - name: Frontend-Verzeichnis kopieren
       ansible.posix.synchronize:
         src: ../frontend/
-        dest: "{{ app_deploy_path }}/frontend/"
+        dest: "{{ app_directory }}/frontend/"
         recursive: yes
 
     - name: Backend-Verzeichnis kopieren
       ansible.posix.synchronize:
         src: ../backend/
-        dest: "{{ app_deploy_path }}/backend/"
+        dest: "{{ app_directory }}/backend/"
         recursive: yes
 
     - name: Container starten
