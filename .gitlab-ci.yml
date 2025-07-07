@@ -68,18 +68,22 @@ check-runner:
 
 # Deployment mit Ansible 
 ansible_deploy:
-   stage: deploy
+  stage: deploy
   image: alpine:latest
   before_script:
     - apk add --no-cache openssh-client ansible git
+
     - mkdir -p ~/.ssh
+
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_ed25519
+
     - chmod 600 ~/.ssh/id_ed25519
+
     - ssh-keyscan -H WeatherApp.mni.thm.de >> ~/.ssh/known_hosts
 
   script:
-    - ansible-playbook -i ansible/inventory/hosts.yml ansible/site-setup.yml --private-key ~/.ssh/id_ed25519 -vvvv
-    - ansible-playbook -i ansible/inventory/hosts.yml ansible/deploy-app.yml --private-key ~/.ssh/id_ed25519 -vvvv
+    - ansible-playbook -i ansible/inventory/hosts.yml ansible/site-setup.yml --private-key ~/.ssh/id_ed25519 -vvv
+    - ansible-playbook -i ansible/inventory/hosts.yml ansible/deploy-app.yml --private-key ~/.ssh/id_ed25519 -vvv
 
   only:
     - branches  
