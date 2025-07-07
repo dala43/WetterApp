@@ -10,8 +10,9 @@ services:
       - ./backend/.env
 
   frontend:
-    build: ./frontend
-    args:
+    build:
+      context: ./frontend
+      args:
         VITE_API_BASE_URL: http://localhost:3000
     ports:
       - "8000:80"
