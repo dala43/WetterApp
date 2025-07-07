@@ -12,11 +12,11 @@
         state: directory
         recurse: yes
 
-    - name: Frontend-Dateien einzeln kopieren
+    - name: Frontend-Verzeichnis kopieren (rekursiv)
       copy:
-        src: "{{ item }}"
-        dest: "{{ app_directory }}/frontend/{{ item | basename }}"
-      loop: "{{ lookup('fileglob', '../frontend/*', wantlist=True) }}"
+        src: ../frontend/
+        dest: "{{ app_directory }}/frontend/"
+        recursive: yes
 
     - name: Zielverzeichnis für Backend erstellen
       file:
@@ -24,11 +24,11 @@
         state: directory
         recurse: yes
 
-    - name: Backend-Dateien einzeln kopieren
+    - name: Backend-Verzeichnis kopieren (rekursiv)
       copy:
-        src: "{{ item }}"
-        dest: "{{ app_directory }}/backend/{{ item | basename }}"
-      loop: "{{ lookup('fileglob', '../backend/*', wantlist=True) }}"
+        src: ../backend/
+        dest: "{{ app_directory }}/backend/"
+        recursive: yes
 
     - name: Docker-Compose-Datei kopieren
       copy:
