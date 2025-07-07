@@ -6,6 +6,12 @@
     app_directory: /opt/wetterapp
 
   tasks:
+    - name: rsync installieren (Debian/Ubuntu)
+      apt:
+        name: rsync
+        state: present
+      when: ansible_os_family == "Debian"
+
     - name: Zielverzeichnis erstellen
       file:
         path: "{{ app_directory }}"
