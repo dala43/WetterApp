@@ -16,6 +16,18 @@
         src: ../docker-compose.yml
         dest: "{{ app_directory }}/docker-compose.yml"
 
+    - name: Frontend-Verzeichnis kopieren
+      ansible.posix.synchronize:
+        src: ../frontend/
+        dest: "{{ app_deploy_path }}/frontend/"
+        recursive: yes
+
+    - name: Backend-Verzeichnis kopieren
+      ansible.posix.synchronize:
+        src: ../backend/
+        dest: "{{ app_deploy_path }}/backend/"
+        recursive: yes
+
     - name: Container starten
       shell: |
         docker-compose -f {{ app_directory }}/docker-compose.yml up -d --pull always
