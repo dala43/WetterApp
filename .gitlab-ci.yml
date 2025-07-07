@@ -2,8 +2,9 @@ stages:
   - lint
   - sonar
   - build
-  - deploy
   - test
+  - deploy
+
 
 # Lint Backend
 lint-backend:
