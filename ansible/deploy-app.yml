@@ -18,6 +18,6 @@
 
     - name: Container starten
       shell: |
-        docker compose -f {{ app_directory }}/docker-compose.yml up -d --pull always
+        docker-compose -f {{ app_directory }}/docker-compose.yml up -d --pull always
       args:
         chdir: "{{ app_directory }}"
