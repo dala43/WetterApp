@@ -48,7 +48,31 @@ sonar_scan:
   tags:
     - sonarqube
 
+# Build & Push Docker Images via Kaniko (Debug-Image mit Shell)
+build-backend:
+  stage: build
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  script:
+    - /kaniko/executor --context $CI_PROJECT_DIR/backend --dockerfile $CI_PROJECT_DIR/backend/Dockerfile --destination $CI_REGISTRY_IMAGE/backend:latest --destination $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA
+  only:
+    - branches
+  tags:
+    - kaniko
 
+
+build-frontend:
+  stage: build
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  script:
+    - /kaniko/executor --context $CI_PROJECT_DIR/frontend --dockerfile $CI_PROJECT_DIR/frontend/Dockerfile --destination $CI_REGISTRY_IMAGE/frontend:latest --destination $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_SHORT_SHA
+  only:
+    - branches
+  tags:
+    - kaniko
 
 
 # Deployment mit Ansible 
