@@ -51,11 +51,19 @@ sonar_scan:
 
 check-runner:
   stage: test
-  image: gcr.io/kaniko-project/executor:latest
+  image: alpine:latest
+  tags:
+    - alpine
+  before_script:
+    - apk add --no-cache openssh
   script:
     - whoami
     - pwd
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_ed25519
+    - chmod 600 ~/.ssh/id_ed25519
     - ls -la ~/.ssh
+
 
 
 # Deployment mit Ansible 
