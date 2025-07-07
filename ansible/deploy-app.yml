@@ -15,7 +15,7 @@
     - name: Frontend-Dateien rekursiv kopieren
       copy:
         src: "{{ item }}"
-        dest: "{{ app_directory }}/frontend/{{ item | regex_replace('^../frontend/', '') }}"
+        dest: "{{ app_directory }}/frontend/{{ item | regex_replace('^.*/frontend/', '') }}"
         mode: '0644'
       with_fileglob:
         - "../frontend/**"
@@ -30,7 +30,7 @@
     - name: Backend-Dateien rekursiv kopieren
       copy:
         src: "{{ item }}"
-        dest: "{{ app_directory }}/backend/{{ item | regex_replace('^../backend/', '') }}"
+        dest: "{{ app_directory }}/backend/{{ item | regex_replace('^.*/backend/', '') }}"
         mode: '0644'
       with_fileglob:
         - "../backend/**"
