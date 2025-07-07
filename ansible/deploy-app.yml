@@ -22,14 +22,14 @@
         src: ../docker-compose.yml
         dest: "{{ app_directory }}/docker-compose.yml"
 
-    - name: Frontend-Verzeichnis kopieren
-      ansible.posix.synchronize:
+    - name: Frontend-Verzeichnis kopieren (Copy statt Synchronize)
+      copy:
         src: ../frontend/
         dest: "{{ app_directory }}/frontend/"
         recursive: yes
 
-    - name: Backend-Verzeichnis kopieren
-      ansible.posix.synchronize:
+    - name: Backend-Verzeichnis kopieren (Copy statt Synchronize)
+      copy:
         src: ../backend/
         dest: "{{ app_directory }}/backend/"
         recursive: yes
