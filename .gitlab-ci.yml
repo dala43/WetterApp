@@ -65,9 +65,9 @@ ansible_deploy:
 
   script:
     - cd ansible
-    - ansible-playbook -i inventory/hosts.yml site-setup.yml --private-key ~/.ssh/id_ed25519 -u user
-    - ansible-playbook -i inventory/hosts.yml deploy-app.yml --private-key ~/.ssh/id_ed25519 -u user
-
+    - export ANSIBLE_SUDO_PASS=$SUDO_PASSWORD 
+    - ansible-playbook -i inventory/hosts.yml site-setup.yml --private-key ~/.ssh/id_ed25519 -u user --extra-vars "ansible_become_pass=$SUDO_PASSWORD"  
+    - ansible-playbook -i inventory/hosts.yml deploy-app.yml --private-key ~/.ssh/id_ed25519 -u user --extra-vars "ansible_become_pass=$SUDO_PASSWORD"  
   only:
     - branches
   tags:
