@@ -1,0 +1,20 @@
+- name: Server vorbereiten (Updates + Docker)
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Alle Pakete aktualisieren
+      apt:
+        update_cache: yes
+        upgrade: dist
+
+    - name: Docker installieren
+      apt:
+        name: docker.io
+        state: present
+
+    - name: Docker Compose installieren
+      get_url:
+        url: https://github.com/docker/compose/releases/download/v2.24.5/docker-compose-linux-x86_64
+        dest: /usr/local/bin/docker-compose
+        mode: '0755'

@@ -1,0 +1,49 @@
+- name: WetterApp deployen
+  hosts: all
+  become: true
+
+  vars:
+    app_directory: /opt/wetterapp
+
+  tasks:
+    - name: Zielverzeichnis für Frontend erstellen
+      file:
+        path: "{{ app_directory }}/frontend"
+        state: directory
+        recurse: yes
+
+    - name: Frontend-Dateien rekursiv kopieren
+      copy:
+        src: "{{ item }}"
+        dest: "{{ app_directory }}/frontend/{{ item | regex_replace('^.*/frontend/', '') }}"
+        mode: '0644'
+      with_fileglob:
+        - "../frontend/**"
+      when: item is file
+
+    - name: Zielverzeichnis für Backend erstellen
+      file:
+        path: "{{ app_directory }}/backend"
+        state: directory
+        recurse: yes
+
+    - name: Backend-Dateien rekursiv kopieren
+      copy:
+        src: "{{ item }}"
+        dest: "{{ app_directory }}/backend/{{ item | regex_replace('^.*/backend/', '') }}"
+        mode: '0644'
+      with_fileglob:
+        - "../backend/**"
+      when: item is file
+
+    - name: Docker-Compose-Datei kopieren
+      copy:
+        src: ../docker-compose.yml
+        dest: "{{ app_directory }}/docker-compose.yml"
+        mode: '0644'
+
+    - name: Container starten
+      shell: |
+        docker-compose -f {{ app_directory }}/docker-compose.yml up -d --pull always
+      args:
+        chdir: "{{ app_directory }}"

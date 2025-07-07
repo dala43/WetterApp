@@ -8,20 +8,21 @@ const supabase = require('./supabaseClient');
 const Collector = require('./collector');
 
 const app = express();
-const port = 3001;
+const port = 3000;
 
 app.disable('x-powered-by'); // Express-Version verstecken
 app.use(helmet());           // Sicherheitsheader setzen
 
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:5173'], // nur mein Frontend erlauben
-  methods: ['GET', 'POST', 'DELETE'],           // nur nötige Methoden erlauben
+   origin: ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:8000'], 
+  methods: ['GET', 'POST','DELETE'],
+          
 }));
 app.use(express.json());
 
 const collectors = new Map();
 
-app.post('/collectors/start', (req, res) => {
+app.post('/api/collectors/start', (req, res) => {
   const { location } = req.body;
 
   if (!location) {
@@ -74,7 +75,7 @@ app.post('/collectors/start', (req, res) => {
   res.json({ message: `Collector für ${location} gestartet` });
 });
 
-app.post('/collectors/stop', (req, res) => {
+app.post('/api/collectors/stop', (req, res) => {
   const { location } = req.body;
 
   if (!location) return res.status(400).json({ error: 'location erforderlich' });
@@ -90,7 +91,7 @@ app.post('/collectors/stop', (req, res) => {
   res.json({ message: `Collector für ${location} gestoppt` });
 });
 
-app.get('/weather', async (req, res) => {
+app.get('/api/weather', async (req, res) => {
   const { city } = req.query;
 
   let query = supabase.from('wetterdaten').select('*');
@@ -110,7 +111,7 @@ app.get('/weather', async (req, res) => {
 
 //Ort löschen 
 
-app.delete('/weather/:city', async (req, res) => {
+app.delete('/api/weather/:city', async (req, res) => {
   const city = req.params.city;
 
   if (!city) return res.status(400).json({ error: 'city erforderlich' });

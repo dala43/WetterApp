@@ -21,8 +21,12 @@
     loading = true;
     error = "";
 
+const isDocker = window.location.hostname !== 'localhost';
+const API_URL = 'http://localhost:3000';
+
+
     try {
-      await fetch("http://localhost:3001/collectors/start", {
+       await fetch(`${API_URL}/api/collectors/start`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ location: cityToSearch.trim() }),
@@ -30,9 +34,7 @@
 
       await new Promise((res) => setTimeout(res, 3000));
 
-      const res = await fetch(
-        `http://localhost:3001/weather?city=${encodeURIComponent(cityToSearch.trim())}`,
-      );
+         const res = await fetch(`${API_URL}/api/weather?city=${encodeURIComponent(cityToSearch.trim())}`);
       if (!res.ok) throw new Error("Serverfehler");
 
       const data = await res.json();
@@ -115,9 +117,8 @@
     const cityToDelete = weatherDataList[index].ort;
 
     try {
-      const res = await fetch(
-        `http://localhost:3001/weather/${encodeURIComponent(cityToDelete)}`,
-        {
+          const res = await fetch(`${API_URL}/api/collectors/${encodeURIComponent(location)}`, {
+
           method: "DELETE",
         },
       );
@@ -133,12 +134,15 @@
       }
 
       // Video anpassen
-      currentVideo = weatherDataList[activeIndex]?.video || "Hintergrund.mp4";
-    } catch (err) {
-      console.error(err);
-      error = "Fehler beim Löschen der Stadt";
-    }
+       currentVideo = weatherDataList.length > 0
+      ? weatherDataList[activeIndex]?.video || 'Hintergrund.mp4'
+      : 'Hintergrund.mp4';
+
+  } catch (err) {
+    console.error('Fehler beim Löschen:', err);
   }
+}
+
 </script>
 
 <video class="video-bg" src={currentVideo} autoplay muted loop playsinline
