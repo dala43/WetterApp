@@ -12,13 +12,18 @@ Cloud-native Microservice-Anwendung zur Erfassung, Speicherung und Visualisierun
 
 ## Technologien
 
-| Bereich        | Technologie                |
-|----------------|----------------------------|
-| Frontend       | Svelte                     |
-| Backend        | Express.js (Node.js)       |
-| Datenhaltung   | Supabase (PostgreSQL BaaS) |
-| Datenquelle    | OpenWeatherMap API         |
-| CI/CD          | GitLab CI/CD, SonarQube    |
+| Bereich | Technologie |
+|---|---|
+| Frontend | Svelte |
+| Backend | Express.js / Node.js |
+| Datenhaltung | Supabase / PostgreSQL |
+| Datenquelle | OpenWeatherMap API |
+| Containerisierung | Docker / Docker Compose |
+| Deployment | Ansible |
+| CI/CD | GitLab CI/CD |
+| Codequalität | SonarQube |
+| Versionsverwaltung | Git |
+| Große Dateien | Git LFS |
 
 
 ## ProjektStruktur 
@@ -41,15 +46,46 @@ npm run lint
 npm run format
 
 ## Installation
-``` bash
-zum Ausführen der Frontend: 
+
+### Voraussetzungen
+
+Für die lokale Ausführung werden unter anderem folgende Werkzeuge benötigt:
+
+- Node.js
+- npm
+- Git
+- Git LFS
+- Docker und Docker Compose
+
+### Repository klonen
+
+```bash
+git clone https://github.com/dala43/WetterApp.git
+cd WetterApp
+```
+
+Da einige Wetteranimationen aufgrund ihrer Dateigröße mit Git LFS verwaltet werden, sollte Git LFS nach dem Klonen initialisiert und die Dateien heruntergeladen werden:
+
+```bash
+git lfs install
+git lfs pull
+```
+
+### Frontend installieren und starten
+
+```bash
 cd frontend
 npm install
 npm run dev
+```
 
-Zum Ausführen der Backend
+### Backend starten
+
+In einem zweiten Terminal:
+
+```bash
 cd backend
-node index.js 
+node index.js
 ```
 
 
@@ -59,6 +95,48 @@ node index.js
 - gibt eine Stadt in der Suchfeld
 - danach suchen Button eintippen
 - die Visuale und Grafische wetter Daten interpretieren
+
+## Git LFS
+
+Die Wetteranimationen im Verzeichnis `frontend/static/` werden aufgrund ihrer Dateigröße mit **Git Large File Storage (Git LFS)** verwaltet.
+
+Aktuell werden folgende Dateien mit Git LFS verwaltet:
+
+- `frontend/static/Hintergrund.mp4`
+- `frontend/static/gewitter.mp4`
+- `frontend/static/regen.mp4`
+- `frontend/static/schnee.mp4`
+- `frontend/static/sonne.mp4`
+- `frontend/static/wolken.mp4`
+
+Nach dem Klonen des Repositorys können die Dateien mit folgendem Befehl heruntergeladen werden:
+
+```bash
+git lfs pull
+```
+
+## CI/CD
+
+Das Projekt enthält eine GitLab-CI/CD-Konfiguration.
+
+Die Pipeline ist in folgender Datei definiert:
+
+```text
+.gitlab-ci.yml
+```
+
+Die CI/CD-Umgebung unterstützt unter anderem die automatisierte Qualitätssicherung des Projekts.
+
+## Dokumentation
+
+Weitere Informationen zur Architektur, Bereitstellung und Ausführung der Anwendung befinden sich im Verzeichnis:
+
+```text
+Dokumentation/
+```
+
+Zusätzlich steht eine Dokumentation zur Bereitstellung der Cloud-Native Application mit Docker und Docker Compose zur Verfügung.
+
 
 ## Quellen für Hintergrundvideos
 Sonne:
@@ -83,9 +161,21 @@ Gewitter:
 https://www.pexels.com/de-de/suche/videos/gewitter/
 https://videos.pexels.com/video-files/2657691/2657691-hd_1920_1080_30fps.mp4
 
-ChatGpt zur Dokumentation
+
+## Unterstützung bei der Dokumentation
+
+Bei der Strukturierung und sprachlichen Ausarbeitung der Projektdokumentation wurde **ChatGPT** unterstützend eingesetzt.
+
+Die technische Umsetzung, Konfiguration und Projektdokumentation wurden durch die Projektgruppe erarbeitet und überprüft.
 
 ## Autoren
-Dania Al Aji 
-Eman Kara Ali &
-Tchenou chimi Julienne Malvina 
+
+- **Dania Al Aji**
+- **Eman Kara Ali**
+- **Tchenou Chimi Julienne Malvina**
+
+## Projektstatus
+
+Das Projekt wurde im Rahmen einer Gruppenarbeit an der **Technischen Hochschule Mittelhessen (THM)** entwickelt.
+
+Der Schwerpunkt liegt auf der praktischen Umsetzung einer cloud-nativen Microservice-Anwendung mit Wetterdaten, Containerisierung, CI/CD, automatisierter Bereitstellung und dokumentierter Softwareentwicklung.
