@@ -127,15 +127,6 @@ Die Pipeline ist in folgender Datei definiert:
 
 Die CI/CD-Umgebung unterstützt unter anderem die automatisierte Qualitätssicherung des Projekts.
 
-## Dokumentation
-
-Weitere Informationen zur Architektur, Bereitstellung und Ausführung der Anwendung befinden sich im Verzeichnis:
-
-```text
-Dokumentation/
-```
-
-Zusätzlich steht eine Dokumentation zur Bereitstellung der Cloud-Native Application mit Docker und Docker Compose zur Verfügung.
 
 
 ## Quellen für Hintergrundvideos
